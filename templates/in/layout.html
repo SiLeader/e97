@@ -1,0 +1,52 @@
+{#
+  Copyright 2018 SiLeader.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+#}
+
+{% extends "layout.html" %}
+
+{% block body %}
+    <div class="col-6 order-first">
+        <h1 class="system-title">{{ SYSTEM_NAME }}</h1>
+    </div>
+    <div class="col-6 order-2">
+        <form method="get" action="{{ url_for("search_pages") }}">
+            <div class="form-group row">
+                <input class="form-control col-10" type="text" name="q" value="{{ search_query }}">
+                <button class="btn btn-primary col-1">Search</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-12 col-lg-1 order-xs-last order-lg-3">
+        <h4 style="margin-top: 1%">Menu</h4>
+        <ul>
+            <li><a href="{{ url_for("index") }}">Index</a></li>
+            <li><a href="{{ url_for("add_user") }}">Add user</a></li>
+            <li><a href="{{ url_for("add_page") }}">Add page</a></li>
+            <li><a href="{{ url_for("logout") }}">Sign out</a></li>
+        </ul>
+
+        <h4 style="margin-top: 1%">New/Update</h4>
+        <ul>
+        {% for latest in latests %}
+            <li><a href="{{ url_for("contents_show", pid=latest["id"]) }}">{{ latest["title"] }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="col-xs-12 col-lg-11 order-xs-3 order-lg-last">
+    {% block content_body %}
+    {% endblock %}
+    </div>
+{% endblock %}

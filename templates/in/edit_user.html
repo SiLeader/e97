@@ -1,0 +1,53 @@
+{#
+  Copyright 2018 SiLeader.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+#}
+
+{% extends "in/layout.html" %}
+
+{% block content_body %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post" action="{{ post_to }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                {% if new_user %}
+                <div class="form-group">
+                    <label>E-mail:</label>
+                    <input type="email" class="form-control" name="email" required="required">
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" name="name" {% if new_user %}required="required"{% endif %}>
+                </div>
+
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" class="form-control" name="password" {% if new_user %}required="required"{% endif %}>
+                </div>
+
+                <div class="form-group">
+                    <label>Password(Confirm):</label>
+                    <input type="password" class="form-control" name="password-confirm" {% if new_user %}required="required"{% endif %}>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Post</button>
+
+                <p style="color: red;">{{ message }}</p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{#
+  Copyright 2018 SiLeader.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+#}
+
+{% extends "layout.html" %}
+
+{% block top_script %}
+    <script type="application/javascript">
+        function init() {
+            $('input[name="tz"]:hidden').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+        }
+
+        $(init);
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="col-xs-12 col-lg-6">
+        <div class="card border-primary">
+            <div class="card-header">Sign in</div>
+            <div class="card-body">
+                <form action="{{ url_for("login") }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="tz">
+
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" name="email" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+
+                    {% if sign_in_message != None %}
+                        <p><strong style="color: red">{{ sign_in_message }}</strong></p>
+                    {% endif %}
+
+                    <button type="submit" class="btn-primary">Sign in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
