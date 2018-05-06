@@ -46,29 +46,30 @@ def login(uid, tz_name):
     session['limit'] = (util.get_current_datetime() + _LIMIT).strftime(_STR_FORMAT)
     session['timezone'] = tz_name
 
-    nonce = __hash(os.urandom(1024))
-    session['nonce'] = nonce
+    nonce = os.urandom(1024)
+    session['nonce'] = __hash(nonce)
     _nonce[uid] = nonce
     return True
 
 
 def check():
-    if session.get('id') is None or session.get('limit') is None:
+    uid = session.get('id')
+    limit = session.get('limit')
+    if uid is None or limit is None:
         logout()
         return False
 
-    uid = session.get('id')
-    if session.get('nonce') != _nonce[uid]:
+    if uid not in _nonce or session.get('nonce') != __hash(_nonce[uid]):
         return False
 
-    dt = util.get_datetime_with_timezone(session['limit'], _STR_FORMAT, datetime.timezone.utc)
+    dt = util.get_datetime_with_timezone(limit, _STR_FORMAT, datetime.timezone.utc)
     current = util.get_current_datetime()
 
     if dt <= current:
         logout()
         return False
 
-    return login(session['id'], session['timezone'])
+    return login(uid, session['timezone'])
 
 
 def logout():
