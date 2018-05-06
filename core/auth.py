@@ -72,12 +72,17 @@ def check():
 
 
 def logout():
-    if session.get('id') is not None:
+    uid = session.get('id')
+    if uid is not None:
         session.pop('id')
     if session.get('limit') is not None:
         session.pop('limit')
     if session.get('timezone') is not None:
         session.pop('timezone')
+    if session.get('nonce') is not None:
+        session.pop('nonce')
+        if uid is not None:
+            _nonce.pop(uid)
     return True
 
 
