@@ -19,6 +19,8 @@
 
 
 import datetime
+import os
+import hashlib
 
 from flask import session
 
@@ -26,18 +28,37 @@ from core import util
 
 _LIMIT = datetime.timedelta(hours=5)
 _STR_FORMAT = '%Y-%m-%d %H:%M:%S'
+_STRETCHING = 10000
+
+_nonce = {}
+
+
+def __hash(data):
+    for _ in range(_STRETCHING):
+        s512 = hashlib.sha512()
+        s512.update(data)
+        data = s512.hexdigest().encode('utf-8')
+    return data.decode('utf-8')
 
 
 def login(uid, tz_name):
     session['id'] = uid
     session['limit'] = (util.get_current_datetime() + _LIMIT).strftime(_STR_FORMAT)
     session['timezone'] = tz_name
+
+    nonce = __hash(os.urandom(1024))
+    session['nonce'] = nonce
+    _nonce[uid] = nonce
     return True
 
 
 def check():
     if session.get('id') is None or session.get('limit') is None:
         logout()
+        return False
+
+    uid = session.get('id')
+    if session.get('nonce') != _nonce[uid]:
         return False
 
     dt = util.get_datetime_with_timezone(session['limit'], _STR_FORMAT, datetime.timezone.utc)
